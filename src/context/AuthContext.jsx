@@ -24,14 +24,14 @@ const AuthProvider = ({ children }) => {
 
     const data = await response.json();
     if (data.success) {
-      const newUser = { id: data.userID, userName: data.userName };
+      const newUser = { id: data.userID, customerID: data.customerID, userName: data.userName, roles: data.roles };
       setapiBearerToken(data.tokenString);
       setUser(newUser);
       setIsAuthenticated(true);
       localStorage.setItem('user', JSON.stringify(newUser));
       return true; // Indicate successful login
     }
-    
+
     throw new Error(data.message);
   };
 
@@ -41,32 +41,8 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
   };
 
-  const sendPWResetLink = async (email) => {
-    const response = await fetch('/api/auth/passwordresetlink', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ Email: email, PasswordResetLinkURL: `${window.location.origin}/reset-password` }),
-    });
-
-    const data = await response.json();
-    if (!data.success)
-      throw new Error(data.message);
-
-    return true;
-  };
-
-  const resetPassword = async (email, password, resetToken) => {
-    const response = await fetch('/api/auth/passwordreset', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ Email: email, NewPassword: password, ResetToken: resetToken }),
-    });
-
-    const data = await response.json();
-    if (!data.success)
-      throw new Error(data.errors);
-
-    return true;
+  const userHasRole = (requiredRole) => {
+    return user.roles.includes(requiredRole);
   };
 
   const contextValue = {
@@ -75,8 +51,7 @@ const AuthProvider = ({ children }) => {
     apiBearerToken,
     login,
     logout,
-    sendPWResetLink,
-    resetPassword
+    userHasRole
   };
 
   return (

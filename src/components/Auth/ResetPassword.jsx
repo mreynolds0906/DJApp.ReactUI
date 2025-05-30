@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
 
 const ResetPassword = () => {
     const [email, setEmail] = useState('');
@@ -8,7 +7,6 @@ const ResetPassword = () => {
     const [resetToken, setResetToken] = useState('');
     const [error, setError] = useState('');
     const [mode, setMode] = useState('reset'); // 'reset' ; 'done'
-    const { resetPassword } = useContext(AuthContext);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -33,6 +31,20 @@ const ResetPassword = () => {
         catch (error) {
             setError(error.message);
         }
+    };
+
+    const resetPassword = async (email, password, resetToken) => {
+        const response = await fetch('/api/auth/passwordreset', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ Email: email, NewPassword: password, ResetToken: resetToken }),
+        });
+
+        const data = await response.json();
+        if (!data.success)
+            throw new Error(data.errors);
+
+        return true;
     };
 
 

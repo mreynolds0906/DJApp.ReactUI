@@ -1,18 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import Profile from '../components/Profile';
+import { AuthContext } from '../../context/AuthContext';
 
-const Dashboard = () => {
-  const { user, apiBearerToken } = useContext(AuthContext);
+const Weather = () => {
+  const { apiBearerToken } = useContext(AuthContext);
   const [forecasts, setForecasts] = useState();
-
 
   useEffect(() => {
     populateWeatherData();
   }, []);
 
-  const contents = forecasts === undefined
-    ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
+  const forecastContents = forecasts === undefined
+    ? <p><em>Loading...</em></p>
     : <table className="table table-striped" aria-labelledby="tableLabel">
       <thead>
         <tr>
@@ -36,12 +34,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2>Dashboard</h2>
-      {user && <p>Welcome, {user.userName}!</p>}
-      <br />
-      <h1 id="tableLabel">Weather forecast</h1>
-      <p>This component demonstrates fetching data from the server.</p>
-      {contents}
+      {forecastContents}
     </div>
   );
 
@@ -58,4 +51,4 @@ const Dashboard = () => {
   }
 };
 
-export default Dashboard;
+export default Weather;
