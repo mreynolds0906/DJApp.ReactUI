@@ -3,13 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const Navigation = () => {
-    const { isAuthenticated, userHasRole, logout } = useContext(AuthContext);
-    const navigate = useNavigate();
+  const { isAuthenticated, userHasRole, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -22,14 +22,23 @@ const Navigation = () => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {isAuthenticated && (
               <>
-              {userHasRole('Artist') && (<li className="nav-item"><Link className="nav-link" to="/dashboard">Artist Dashboard</Link></li>)}
-              {(userHasRole('Agent') || userHasRole('Admin')) && (<li className="nav-item"><Link className="nav-link" to="/admin-dashboard">Admin Dashboard</Link></li>)}
-              <li className="nav-item">
-                <Link className="nav-link" to="/profile">Profile</Link>
-              </li>
-              <li className="nav-item">
-                <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
-              </li>
+              {userHasRole('Admin') ? (
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/admin-dashboard">Admin Dashboard</Link>
+                    </li>
+                  ) : userHasRole('Agent') ? (
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/admin-dashboard">Agent Dashboard</Link>
+                    </li>
+                  ) : null}
+                {userHasRole('Artist') && (<li className="nav-item"><Link className="nav-link" to="/dashboard">Artist Dashboard</Link></li>)}
+
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">Profile</Link>
+                </li>
+                <li className="nav-item">
+                  <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
+                </li>
               </>
             )}
             {!isAuthenticated && (
@@ -41,6 +50,7 @@ const Navigation = () => {
         </div>
       </div>
     </nav>
-  );};
+  );
+};
 
 export default Navigation;

@@ -14,6 +14,8 @@ const Registration = () => {
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
+        setEmail(urlParams.get('email'));
+        setPassword('');
         const token = urlParams.get('token');
         if (token) {
             setRegistrationToken(token);
@@ -41,7 +43,7 @@ const Registration = () => {
         const response = await fetch('/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ Username: email, Password: password, FirstName: firstName, LastName: lastName, RegistrationToken: registrationToken }),
+            body: JSON.stringify({ EmailAddress: email, EmailConfirmed: true, Password: password, FirstName: firstName, LastName: lastName, RegistrationToken: registrationToken }),
         });
 
         const data = await response.json();
@@ -57,7 +59,7 @@ const Registration = () => {
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label>Email:</label>
-                        <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                        <input type="email" placeholder="Enter your email" value={email} disabled />
                     </div>
                     <div>
                         <label>Password:</label>
